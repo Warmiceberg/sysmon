@@ -8,6 +8,7 @@
 import os
 import time
 import psutil
+import json
 
 def uptime():
     date_time = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -17,7 +18,7 @@ def uptime():
         data = float(f.read().split()[0])
         hour, minute = int(data/3600), int(data%3600/60)
     min1, min5, min15 = os.getloadavg()
-    print "date: %s" %date, "current time: %s" %ptime, "uptime: %s:%s" %(hour, minute), "load average: %s, %s, %s" %(min1, min5, min15)
+    print "date: %s" "current time: %s uptime: %s:%s load average: %s, %s, %s" %(date, ptime, hour, minute, min1, min5, min15)
 
 def mem_data():
     kb = 1024
@@ -27,7 +28,7 @@ def mem_data():
     print "Swap: " + str(swap_mem.total/kb) + "k total, " + str(swap_mem.used/kb) + "k used, " + str(swap_mem.free/kb) + "k free, "
 
 def process_data():
-    print "  PID         OWNER    NI        VIRT          RES      STATUS  %MEM       TIME+                  NAME"
+    print "  PID        OWNER    NI        VIRT(kb)     RES(kb)    STATUS   %MEM     TIME+(sec)                  NAME"
     for process in psutil.process_iter():
         process_pid = process.pid
         process_owner = process.username
@@ -41,8 +42,6 @@ def process_data():
         print "%5s %12s %5s %12s %12s %12s %5.2f %10s %25s" %(process_pid, process_owner, process_nice_value, process_virt, process_res, process_status, process_mempercent, process_cputime, process_name) 
 
 if __name__ == '__main__':
-#     while 1:
          uptime()
          mem_data()
          process_data()
-         time.sleep(1)
