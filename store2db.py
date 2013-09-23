@@ -77,6 +77,8 @@ def store_it(datetime, memorydata, processdata):
       process["MEMPERCENT"]
       )
       )
+    database.commit()
+    database.close()
 
 if __name__ == '__main__':
     ut = uptime()
