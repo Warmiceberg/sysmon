@@ -1,7 +1,36 @@
 #!/usr/bin/env python
 
+import sys
+import os
+import time
 import sqlite3
 from sysinfo import *
+
+def createDaemon(choice):
+    if choice == 'start':
+        try:
+            pid = os.fork()
+            if pid > 0:
+               print 'PID: %s Daemon started successfully' % pid
+               with open('pidinfo', 'w') as piddata:
+                   piddata.write("%d" %pid)
+               os._exit(0)
+        except OSError, error:
+            print 'Unable to fork. Error: %d (%s)' % (error.errno, error.strerror)
+            os._exit(1)
+        log()
+    else:
+        with open('pidinfo', 'r') as pid:
+            os.kill(int(pid.read()), 15)
+        print "Daemon killed succesfully"
+
+def log():
+    while True:
+        ut = uptime()
+        md = mem_data()
+        pd = process_data()
+        store_it(ut, md, pd)
+        time.sleep(60)
 
 def store_it(datetime, memorydata, processdata):
     database = sqlite3.connect('data.db')
@@ -81,7 +110,6 @@ def store_it(datetime, memorydata, processdata):
     database.close()
 
 if __name__ == '__main__':
-    ut = uptime()
-    md = mem_data()
-    pd = process_data()
-    store_it(ut, md, pd)
+    # Create the Daemon
+    if len(sys.argv) == 2:
+        createDaemon(sys.argv[1])
