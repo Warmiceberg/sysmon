@@ -19,10 +19,12 @@ def createDaemon(choice):
             print 'Unable to fork. Error: %d (%s)' % (error.errno, error.strerror)
             os._exit(1)
         log()
-    else:
+    elif choice == 'stop':
         with open('pidinfo', 'r') as pid:
             os.kill(int(pid.read()), 15)
         print "Daemon killed succesfully"
+    else:
+        pass
 
 def log():
     while True:
@@ -112,5 +114,5 @@ def store_it(datetime, memorydata, processdata):
 
 if __name__ == '__main__':
     # Create the Daemon
-    if len(sys.argv) == 2:
+    if sys.argv[1]:
         createDaemon(sys.argv[1])
