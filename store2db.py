@@ -34,6 +34,7 @@ def log():
 
 def store_it(datetime, memorydata, processdata):
     database = sqlite3.connect('data.db')
+    database.text_factory = str
     database_cursor = database.cursor()
     database_cursor.execute(
             """
